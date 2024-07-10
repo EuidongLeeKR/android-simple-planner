@@ -4,31 +4,27 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.simpleplanner.ui.common.BottomNavBar
-import com.example.simpleplanner.ui.common.TopNavBar
+import com.example.simpleplanner.enums.BottomNavMenu
+import com.example.simpleplanner.enums.StateKey
+import com.example.simpleplanner.ui.main.BottomNavBar
+import com.example.simpleplanner.ui.main.Dashboard
+import com.example.simpleplanner.ui.main.TopNavBar
 import com.example.simpleplanner.ui.theme.SimplePlannerTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,14 +32,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Content()
+            MainContent()
         }
     }
 }
 
 @Preview
 @Composable
-private fun Content() {
+private fun MainContent() {
+    val states = remember {
+        mutableStateMapOf<StateKey, Any?>(Pair(StateKey.SELECTED_MENU, BottomNavMenu.DASHBOARD))
+    }
     SimplePlannerTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -51,33 +50,29 @@ private fun Content() {
                 TopNavBar()
             },
             bottomBar = {
-                BottomNavBar()
+                BottomNavBar(states)
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { /*TODO*/ }) {
+                /**FloatingActionButton(onClick = { /*TODO*/ }) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-                }
+                }**/
             }) { innerPadding ->
-            Column(
-                modifier = Modifier.padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                SprintProgress()
+            when (states[StateKey.SELECTED_MENU]) {
+                BottomNavMenu.DASHBOARD ->
+                    Dashboard(
+                        modifier = Modifier.padding(innerPadding),
+                        states
+                    )
+                BottomNavMenu.SPRINT -> Content2(Modifier.padding(innerPadding))
             }
         }
     }
 }
 
 @Composable
-fun SprintProgress() {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "스프린트 진행도"
-        )
-        LinearProgressIndicator(
-            progress = { 0.8F }
-        )
-    }
+fun Content2(modifier: Modifier) {
+    Text(
+        modifier = modifier,
+        text = "hi"
+    )
 }

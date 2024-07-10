@@ -1,4 +1,4 @@
-package com.example.simpleplanner.ui.common
+package com.example.simpleplanner.ui.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -8,27 +8,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.simpleplanner.enums.BottomNavMenu
+import com.example.simpleplanner.enums.StateKey
+import com.example.simpleplanner.enums.StateMap
 
-@Preview
 @Composable
-fun BottomNavBar() {
-
-    val selectedIcon = remember { mutableStateOf<String?>(null) }
-    BottomAppBar(
-    ) {
+fun BottomNavBar(
+    state: StateMap
+) {
+    BottomAppBar {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -39,32 +37,40 @@ fun BottomNavBar() {
                     .fillMaxHeight()
                     .weight(1f),
                 imageVector = Icons.Outlined.Phone,
-                contentDescription = "phone",
-                parentState = selectedIcon
+                menu = BottomNavMenu.PHONE,
+                state = state
             )
             ClickableIconButton(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f),
                 imageVector = Icons.Outlined.Face,
-                contentDescription = "face",
-                parentState = selectedIcon
+                menu = BottomNavMenu.FACE,
+                state = state
+            )
+            ClickableIconButton(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f),
+                imageVector = Icons.Outlined.MailOutline,
+                menu = BottomNavMenu.DASHBOARD,
+                state = state
             )
             ClickableIconButton(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f),
                 imageVector = Icons.Outlined.AccountBox,
-                contentDescription = "accountBox",
-                parentState = selectedIcon
+                menu = BottomNavMenu.SPRINT,
+                state = state
             )
             ClickableIconButton(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f),
                 imageVector = Icons.Outlined.Favorite,
-                contentDescription = "favorite",
-                parentState = selectedIcon
+                menu = BottomNavMenu.FAVORITE,
+                state = state
             )
         }
     }
@@ -74,22 +80,22 @@ fun BottomNavBar() {
 fun ClickableIconButton(
     modifier: Modifier = Modifier,
     imageVector: ImageVector,
-    contentDescription: String?,
-    parentState: MutableState<String?>
+    menu: BottomNavMenu,
+    state: StateMap
 ) {
     IconButton(
         modifier = modifier,
         onClick = {
-            if (parentState.value !== contentDescription) {
+            if (state[StateKey.SELECTED_MENU] !== menu) {
                 // Do Something
-                parentState.value = contentDescription
+                state[StateKey.SELECTED_MENU] = menu
             }
         }
     ) {
         Icon(
             imageVector = imageVector,
-            contentDescription = contentDescription,
-            tint = if (parentState.value == contentDescription) {
+            contentDescription = menu.desc,
+            tint = if (state[StateKey.SELECTED_MENU] == menu) {
                 MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.surfaceDim
