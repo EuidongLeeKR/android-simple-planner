@@ -3,7 +3,9 @@ package com.example.simpleplanner.enums
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 
 enum class StateKey {
-    SELECTED_MENU
+    SELECTED_MENU,
+    SPRINT_START,
+    SPRINT_END
 }
 
 // 하단 메뉴 바 관련 상태
